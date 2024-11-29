@@ -14,14 +14,14 @@ def command(command: str, parameters: int = 0, exact: bool = False) -> str:
 
 def error_handler(func):
     @wraps(func)
-    def wrapper(event: events.NewMessage.Event | events.CallbackQuery.Event, *args, **kwargs):
+    async def wrapper(event: events.NewMessage.Event | events.CallbackQuery.Event, *args, **kwargs):
         try:
-            return func(event, *args, **kwargs)
+            return await func(event, *args, **kwargs)
         except events.StopPropagation as stop:
             raise stop
         except Exception as e:
             logging.error(e, exc_info=True)
-            return client.send_message(event.chat_id, MESSAGES['error'], parse_mode='md')
+            await client.send_message(event.chat_id, MESSAGES['error'], parse_mode='md')
     return wrapper
 
 class Action(Enum):
