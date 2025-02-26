@@ -87,10 +87,21 @@ def update_rasp_entities(entities: list[RaspEntity]):
     with closing(pool.get_connection()) as con:
         with closing(con.cursor()) as cur:
             for entity in entities:
-                try:
-                    get_rasp_entity(name=entity.name, type=entity.type)
+                cur.execute('SELECT `entity_id`, `type`, `name` FROM `rasp_entities` WHERE `name` = %s AND type = %s', (entity.name, entity.type.value))
+                res = cur.fetchone()
+                if res is not None:
+                    if res[0] == entity.id:
+                        continue
+                    cur.execute('SELECT `id` FROM `rasp_entities` WHERE `entity_id` = %s AND `type` = %s', (entity.id, entity.type.value))
+                    id = cur.fetchone()
+                    if id is not None:
+                        cur.execute('DELETE FROM `rasp_entities` WHERE `id` = %s', (id[0],))
                     cur.execute('UPDATE `rasp_entities` SET `entity_id` = %s WHERE `type` = %s AND `name` = %s', (entity.id, entity.type.value, entity.name))
-                except NameError:
+                else:
+                    cur.execute('SELECT `id` FROM `rasp_entities` WHERE `entity_id` = %s AND `type` = %s', (entity.id, entity.type.value))
+                    id = cur.fetchone()
+                    if id is not None:
+                        cur.execute('DELETE FROM `rasp_entities` WHERE `id` = %s', (id[0],))
                     cur.execute('INSERT INTO `rasp_entities` (`entity_id`, `type`, `name`) VALUES (%s, %s, %s)', (entity.id, entity.type.value, entity.name))
                 con.commit()
 
