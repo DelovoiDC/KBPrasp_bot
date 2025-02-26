@@ -60,7 +60,7 @@ class Rasp:
         rasp_list = []
 
         container = page.getroot().find_class('block_back')[0]
-        for entry in container.cssselect('div')[1:]:
+        for entry in container.cssselect('div')[2:]:
             type = RaspEntityType.by_label(entry.find_class('type_find')[0].text_content())
             a = entry.cssselect('a')[0]
             name = a.text_content()
