@@ -46,12 +46,28 @@ class Weekday:
 
 class Rasp:
     __url = 'https://kbp.by/rasp/timetable/view_beta_kbp/?cat={}&id={}'
+    __list_url = 'https://kbp.by/rasp/timetable/view_beta_kbp/?q='
 
     def check_rasp(self, weekday: int, left_week: bool = True) -> bool:
         html_page = requests.get(self.__url.format('group', '10'), headers=headers).content
         page = html.parse(BytesIO(html_page))
         zamena = page.getroot().get_element_by_id('left_week' if left_week else 'right_week').cssselect('tr')[1].cssselect('th')[weekday + 1].text_content()
         return zamena.find('Замен нет') != -1 or zamena.find('Показать замены') != -1
+
+    def get_rasp_list(self) -> list[RaspEntity]:
+        html_page = requests.get(self.__list_url, headers=headers).content
+        page = html.parse(BytesIO(html_page))
+        rasp_list = []
+
+        container = page.getroot().find_class('block_back')[0]
+        for entry in container.cssselect('div')[1:]:
+            type = RaspEntityType.by_label(entry.find_class('type_find')[0].text_content())
+            a = entry.cssselect('a')[0]
+            name = a.text_content()
+            id = int(a.get('href')split('=')[-1])
+            entity = RaspEntity(id, type, name)
+            rasp_list.append(entity)
+        return rasp_list
     
     @cache(copy=True, ttl=60)
     def get_rasp(self, entity: RaspEntity) -> dict[str, list[Weekday]]:

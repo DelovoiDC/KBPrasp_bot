@@ -2,7 +2,7 @@ from telethon import events, Button
 from telethon.types import ReplyKeyboardMarkup
 from telethon.errors import MessageNotModifiedError
 from ..config import MESSAGES
-from ..db_utils import with_user, User, get_subs, get_rasp_entity, find_rasp_entity, RaspEntity, RaspEntityType
+from ..db_utils import with_user, User, get_subs, get_rasp_entity, find_rasp_entity, RaspEntity, RaspEntityType, update_rasp_entities
 from ..client import client, scheduler
 from ..kbp import Rasp, Weekday, PairType
 from . import command, common_translit, error_handler
@@ -14,6 +14,7 @@ from functools import wraps
 
 tz = timezone(timedelta(hours=3))
 kbp_rasp = Rasp()
+update_rasp_entities(kbp_rasp.get_rasp_list())
 
 def format_rasp(weekday: Weekday, entity: RaspEntity, width: int, show_timestamps: bool = False) -> MessagePane:
     pane = MessagePane(MessagePaneDirection.VERTICAL)

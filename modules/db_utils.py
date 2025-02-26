@@ -37,6 +37,17 @@ class RaspEntityType(Enum):
             case self.SUBJECT:
                 return MESSAGES['rasp_entity_aliases']['subject']
 
+    @classmethod
+    def by_label(cls, label: str):
+        if label == MESSAGES['rasp_entity_labels']['group']:
+            return cls.GROUP
+        if label == MESSAGES['rasp_entity_labels']['place']:
+            return cls.PLACE
+        if label == MESSAGES['rasp_entity_labels']['subject']:
+            return cls.SUBJECT
+        if label == MESSAGES['rasp_entity_labels']['teacher']:
+            return cls.TEACHER
+
 class RaspEntity:
     def __init__(self, id: int, type: RaspEntityType, name: str):
         self.id = id
@@ -71,6 +82,17 @@ def get_rasp_entity(name: str | None = None, id: int | None = None, type: RaspEn
             if res is None:
                 raise NameError('No such entity')
             return RaspEntity(res[0], RaspEntityType(res[1]), res[2])
+
+def update_rasp_entities(entities: list[RaspEntity]):
+    with closing(pool.get_connection()) as con:
+        with closing(con.cursor()) as cur:
+            for entity in entities:
+                try:
+                    get_rasp_entity(name=entity.name, type=entity.type)
+                    cur.execute('UPDATE `rasp_entities` SET `entity_id` = %s WHERE `type` = %s AND `name` = %s', (entity.id, entity.type.value, entity.name))
+                except NameError:
+                    cur.execute('INSERT INTO `rasp_entities` (`entity_id`, `type`, `name`) VALUES (%s, %s, %s)', (entity.id, entity.type.value, entity.name))
+                con.commit()
 
 def find_rasp_entity(name: str) -> list[RaspEntity] | None:
     with closing(pool.get_connection()) as con:

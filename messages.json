@@ -31,6 +31,12 @@
         "subject": "Учебный Предмет",
         "teacher": "Преподаватель"
     },
+    "rasp_entity_labels": {
+        "group": "группа",
+        "place": "аудитория",
+        "subject": "предмет",
+        "teacher": "преподаватель"
+    },
     "rasp_entity_dialog": {
 		"entity_not_found": "Неизвестное имя сущности",
         "entity_list": "Возможно вы имели в виду:"
