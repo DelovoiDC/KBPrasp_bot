@@ -64,7 +64,7 @@ class Rasp:
             type = RaspEntityType.by_label(entry.find_class('type_find')[0].text_content())
             a = entry.cssselect('a')[0]
             name = a.text_content()
-            id = int(a.get('href')split('=')[-1])
+            id = int(a.get('href').split('=')[-1])
             entity = RaspEntity(id, type, name)
             rasp_list.append(entity)
         return rasp_list
