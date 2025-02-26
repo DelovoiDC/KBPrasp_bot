@@ -15,7 +15,7 @@ The installation process is plain and simple.
 6. Fill the .env file with the necessary data
 7. Set up python virtual environment and install requirements from requirements.txt
 8. Fill database tables with data, acuired from scripts in the `tools` directory
-9. Run the bot with `python bot.py`
+9. Run the bot with `python main.py`
 
 If you use docker, there is a Dockerfile to build a docker image.
 
