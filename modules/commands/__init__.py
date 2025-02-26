@@ -3,6 +3,7 @@ from ..client import client
 from ..config import MESSAGES
 from telethon import events, Button
 from functools import wraps
+import logging
 
 def common_translit(text: str) -> str:
     return text.replace('t', 'т').replace('T', 'Т').replace('k', 'к').replace('K', 'К')
