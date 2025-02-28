@@ -28,4 +28,11 @@ def load_messages():
         for key, value in json.load(f).items():
             MESSAGES[key] = value if type(value) is not list else '\n'.join(value)
 
+SCHEDULE = {}
+
+def load_schedule():
+    with open('schedule.json', 'r', encoding='utf-8') as f:
+        SCHEDULE.update(json.load(f))
+
 load_messages()
+load_schedule()

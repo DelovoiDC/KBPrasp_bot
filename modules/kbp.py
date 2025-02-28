@@ -7,14 +7,11 @@ from .utils import cache
 from .db_utils import RaspEntity, RaspEntityType, Mark
 from enum import Enum
 from itertools import chain
+from .config import SCHEDULE
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
 }
-
-zvonki = {'regular': ['8:00', '8:55', '9:50', '10:45', '12:00', '12:55', '14:00', '14:55', '15:50', '16:45', '17:40', '18:35', '19:30'],
-          'thursday': ['8:00', '8:55', '9:50', '10:45', '12:00', '12:55', '14:40', '15:35', '16:30', '17:25', '18:20', '19:15', '20:10'],
-          'saturday': ['8:00', '8:55', '9:50', '10:45', '11:40', '12:35', '13:40', '14:35', '15:30', '16:25', '17:20', '18:15', '19:10']}
 
 class PairType(Enum):
     DEFAULT = 'default'
@@ -107,11 +104,11 @@ class Rasp:
                 pair.number = pair_number
                 match i:
                     case 3:
-                        pair.time = zvonki['thursday'][pair_number - 1]
+                        pair.time = SCHEDULE['thursday'][pair_number - 1]
                     case 5:
-                        pair.time = zvonki['saturday'][pair_number - 1]
+                        pair.time = SCHEDULE['saturday'][pair_number - 1]
                     case _:
-                        pair.time = zvonki['regular'][pair_number - 1]
+                        pair.time = SCHEDULE['regular'][pair_number - 1]
                 rasp[i].pairs.append(pair)
 
         return rasp
